@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "758178660470",
+    "project_id": "syriataxi-f46d3",
+    "storage_bucket": "syriataxi-f46d3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758178660470:android:b24ec95cd8d229c8c71f57",
+        "android_client_info": {
+          "package_name": "com.matchymatchy.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQR_BZ78y6ZQPXybHMx4kM7DhPEgXjph4"
+        },
+        {
+          "current_key": "AIzaSyCCcZ7ArFNRkJ74Bjsw6WzRIGok4ppI3Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758178660470:android:1cf385d12c3c7115c71f57",
+        "android_client_info": {
+          "package_name": "com.syriataxi.syriataxi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQR_BZ78y6ZQPXybHMx4kM7DhPEgXjph4"
+        },
+        {
+          "current_key": "AIzaSyCCcZ7ArFNRkJ74Bjsw6WzRIGok4ppI3Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

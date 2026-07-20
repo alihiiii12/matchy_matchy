@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- خلفية ماتشي ماتشي — نعناع/أزرق فاتح بدل كحلي-بنفسج زادك -->
+    <color name="ic_launcher_background">#D0EBE3</color>
+    <color name="splash_brand_bg">#B9D6E8</color>
+</resources>
