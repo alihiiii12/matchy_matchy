@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+﻿import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -25,8 +25,8 @@ class AdminOrdersPdfExporter {
     final totalRevenue = orders.fold<double>(0, (sum, o) => sum + ((o['total'] as num?)?.toDouble() ?? 0));
 
     final doc = pw.Document(
-      title: 'matchy matchy Orders Archive',
-      author: 'matchy matchy',
+      title: 'rozetaj Orders Archive',
+      author: 'rozetaj',
     );
 
     doc.addPage(
@@ -96,7 +96,7 @@ class AdminOrdersPdfExporter {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
-                      'matchy matchy',
+                      'rozetaj',
                       style: pw.TextStyle(
                         font: englishFont,
                         fontSize: 20,

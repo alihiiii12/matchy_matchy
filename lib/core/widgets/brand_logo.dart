@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
-/// Official Matchy Matchy brand mark.
+/// Official rozetaj brand mark.
 abstract final class BrandAssets {
   /// Full-color logo (pastel background) — splash / hero.
   static const logo = 'assets/images/logo.png';
@@ -40,7 +40,7 @@ class BrandLogo extends StatelessWidget {
       fit: fit,
       filterQuality: FilterQuality.high,
       isAntiAlias: true,
-      semanticLabel: 'matchy matchy',
+      semanticLabel: 'rozetaj',
     );
 
     if (!circular) {

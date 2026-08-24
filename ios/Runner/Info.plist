@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>rosetaje</string>
+	<string>rozetaj</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -67,12 +67,12 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>روزي تاج يحتاج موقعك لتحديد عنوان التوصيل تلقائياً.</string>
+	<string>rozetaj يحتاج موقعك لتحديد عنوان التوصيل تلقائياً.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>روزي تاج يحتاج موقعك لتحديد عنوان التوصيل وتتبع موقع السائق أثناء التوصيل.</string>
+	<string>rozetaj يحتاج موقعك لتحديد عنوان التوصيل وتتبع موقع السائق أثناء التوصيل.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>روزي تاج يحتاج الكاميرا لرفع صورة إثبات الدفع.</string>
+	<string>rozetaj يحتاج الكاميرا لرفع صورة إثبات الدفع.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>روزي تاج يحتاج الوصول للصور لرفع إثبات الدفع.</string>
+	<string>rozetaj يحتاج الوصول للصور لرفع إثبات الدفع.</string>
 </dict>
 </plist>

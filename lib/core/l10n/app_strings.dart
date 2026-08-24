@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:matchy_matchy/core/controllers/language_controller.dart';
@@ -20,8 +20,8 @@ abstract final class AppStrings {
     return appStringsEn[key] ?? ar;
   }
 
-  static String get appName => _en ? 'rosetaje' : 'روزي تاج';
-  static String get appNameEn => 'rosetaje';
+  static String get appName => _en ? 'rozetaj' : 'rozetaj';
+  static String get appNameEn => 'rozetaj';
   static String get adminMobileBlocked => _t('adminMobileBlocked', 'حساب الإدارة متاح من الموقع فقط، وليس من تطبيق الجوال.');
   static String get pointsBalance => _t('pointsBalance', 'رصيد النقاط');
   static String get pointsUnit => _t('pointsUnit', 'نقطة');
@@ -97,7 +97,7 @@ abstract final class AppStrings {
   static String get subcategories => _t('subcategories', 'تصنيف فرعي');
   static String get chooseSubcategory => _t('chooseSubcategory', 'اختر التصنيف الفرعي');
   static String get noProducts => _t('noProducts', 'لا توجد منتجات');
-  static String get comingSoon => _t('comingSoon', 'قريباً على روزي تاج');
+  static String get comingSoon => _t('comingSoon', 'قريباً على rozetaj');
   static String get product => _t('product', 'منتج');
   static String get description => _t('description', 'الوصف');
   static String get addToCart => _t('addToCart', 'أضف إلى السلة');
@@ -128,8 +128,9 @@ abstract final class AppStrings {
   static String get googleNotConfigured => _t('googleNotConfigured', 'Google Sign-In غير مُعد بعد');
   static String get googleSignInFailed => _t('googleSignInFailed', 'تعذر تسجيل الدخول عبر Google');
   static String get noAccount => _t('noAccount', 'ليس لديك حساب؟');
+  static String get continueAsGuest => _t('continueAsGuest', 'متابعة كزائر');
   static String get createAccountTitle => _t('createAccountTitle', 'إنشاء حساب');
-  static String get createAccountSubtitle => _t('createAccountSubtitle', 'أنشئ حساب زبون للتسوق مع روزي تاج');
+  static String get createAccountSubtitle => _t('createAccountSubtitle', 'أنشئ حساب زبون للتسوق مع rozetaj');
   static String get contactPhone => _t('contactPhone', 'رقم التواصل');
   static String get enterContactPhone => _t('enterContactPhone', 'أدخل رقم هاتفك للتواصل');
   static String get fullName => _t('fullName', 'الاسم الكامل');
@@ -188,11 +189,11 @@ abstract final class AppStrings {
   static String get startShopping => _t('startShopping', 'ابدأ التسوق');
   static String get hi => _t('hi', 'مرحباً');
   static String get shoppingToday => _t('shoppingToday', 'اطلب طقم عائلتك بسهولة');
-  static String get bannerTitle => _t('bannerTitle', 'روزي تاج\nللعائلة كاملة');
+  static String get bannerTitle => _t('bannerTitle', 'rozetaj\nللعائلة كاملة');
   static String get bannerSubtitle => _t('bannerSubtitle', 'أعياد • أعراس • بحر • منزلي');
   static String get shopByCategory => _t('shopByCategory', 'تسوق حسب القسم');
   static String get featuredProducts => _t('featuredProducts', 'الأكثر طلباً');
-  static String get featuredBrands => _t('featuredBrands', 'روزي تاج');
+  static String get featuredBrands => _t('featuredBrands', 'rozetaj');
   static String get bestSellers => _t('bestSellers', 'الأكثر مبيعاً');
   static String get describeYourOutfit => _t('describeYourOutfit', 'أوصف لباسك');
   static String get describeYourOutfitHint => _t('describeYourOutfitHint', 'اختر الفرد والمقاس والقسم — نعرض المنتجات المطابقة من المتجر.');
@@ -232,7 +233,7 @@ abstract final class AppStrings {
   static String get pieceMotherSport => _t('pieceMotherSport', 'الأم سبور');
   static String get selectAge => _t('selectAge', 'العمر');
   static String get selectGender => _t('selectGender', 'الجنس');
-  static String get familySetHint => _t('familySetHint', 'متجر روزي تاج لأطقم متماثلة — حدّد لكل فرد: الدور، العمر، والمقاس');
+  static String get familySetHint => _t('familySetHint', 'متجر rozetaj لأطقم متماثلة — حدّد لكل فرد: الدور، العمر، والمقاس');
   static String get addFamilyMember => _t('addFamilyMember', 'إضافة فرد للطلب');
   static String get familyMemberRequired => _t('familyMemberRequired', 'أضف فرداً واحداً على الأقل مع العمر والمقاس');
   static String get ageRequired => _t('ageRequired', 'العمر مطلوب لكل فرد');
@@ -315,18 +316,56 @@ abstract final class AppStrings {
   static String get continueToPayment => _t('continueToPayment', 'متابعة للدفع');
   static String get paymentMethod => _t('paymentMethod', 'طريقة الدفع');
   static String get shamCash => _t('shamCash', 'شام كاش');
-  static String get shamCashDesc => _t('shamCashDesc', 'امسح الباركود، حوّل المبلغ، ثم أرفق صورة إثبات الدفع');
+  static String get shamCashDesc => _t('shamCashDesc', 'امسح الـ QR، حوّل المبلغ، ثم أدخل بيانات الحوالة للتدقيق');
   static String get paymentProofTitle => _t('paymentProofTitle', 'ملف إثبات الدفع');
   static String get paymentProofHint => _t('paymentProofHint', 'ارفع ملف إثبات التحويل (صورة أو PDF) من شام كاش');
   static String get pickPaymentFile => _t('pickPaymentFile', 'اختيار ملف');
   static String get paymentProofRequired => _t('paymentProofRequired', 'يرجى إرفاق ملف إثبات الدفع');
   static String get changePaymentFile => _t('changePaymentFile', 'تغيير الملف');
-  static String get approvePayment => _t('approvePayment', 'تأكيد استلام الدفع');
+  static String get approvePayment => _t('approvePayment', 'تم التدقيق واستلام المبلغ');
+  static String get rejectPayment => _t('rejectPayment', 'لم يتم استلام الحوالة');
+  static String get rejectPaymentConfirm => _t(
+        'rejectPaymentConfirm',
+        'سيتم إشعار الزبون بأن الحوالة لم تُستلم ويُطلب منه التسديد مرة أخرى.',
+      );
+  static String get paymentRejectedNotif => _t('paymentRejectedNotif', 'تم رفض الحوالة وإشعار الزبون');
   static String get rejectOrder => _t('rejectOrder', 'رفض عملية البيع');
   static String get rejectOrderConfirm => _t('rejectOrderConfirm', 'هل أنت متأكد من رفض هذا الطلب؟ لن يتم تنفيذه.');
+  static String get shamCashScanHint =>
+      _t('shamCashScanHint', 'امسح الـ QR وحوّل المبلغ المطلوب لهذا الحساب');
+  static String get shamCashTransferDetails => _t('shamCashTransferDetails', 'بيانات الحوالة');
+  static String get shamCashTransferHint =>
+      _t('shamCashTransferHint', 'بعد التحويل أدخل بيانات الحوالة ثم اضغط تدقيق');
+  static String get shamSenderAccount => _t('shamSenderAccount', 'اسم الحساب المحوّل منه');
+  static String get shamTransferName => _t('shamTransferName', 'اسمك');
+  static String get shamTransferRef => _t('shamTransferRef', 'رقم الحوالة');
+  static String get shamTransferAmount => _t('shamTransferAmount', 'المبلغ المحوّل');
+  static String get shamSenderAccountRequired => _t('shamSenderAccountRequired', 'أدخل اسم الحساب المحوّل منه');
+  static String get shamTransferNameRequired => _t('shamTransferNameRequired', 'أدخل اسمك');
+  static String get shamTransferRefRequired => _t('shamTransferRefRequired', 'أدخل رقم الحوالة');
+  static String get shamTransferAmountRequired => _t('shamTransferAmountRequired', 'أدخل مبلغ الحوالة');
+  static String get verifyShamCash => _t('verifyShamCash', 'تدقيق');
+  static String get verifyingPayment => _t('verifyingPayment', 'جاري إرسال طلب التدقيق...');
+  static String get sendingOrder => _t('sendingOrder', 'جاري إرسال طلبك...');
+  static String get copyAccountId => _t('copyAccountId', 'نسخ رقم الحساب');
+  static String get shamCashIdCopied => _t('shamCashIdCopied', 'تم نسخ رقم الحساب');
+  static String get shamCashReviewBadge => _t('shamCashReviewBadge', 'طلب تدقيق دفع شام كاش');
+  static String get shamCashTransferSection => _t('shamCashTransferSection', 'تفاصيل حوالة شام كاش');
+  static String get alBaraka => _t('alBaraka', 'بنك البركة');
+  static String get alBarakaDesc =>
+      _t('alBarakaDesc', 'حوّل إلى حساب بنك البركة ثم أدخل بيانات الحوالة للتدقيق');
+  static String get alBarakaHint =>
+      _t('alBarakaHint', 'حوّل المبلغ المطلوب لهذا الحساب ثم أدخل بيانات الحوالة');
+  static String get alBarakaCif => _t('alBarakaCif', 'رقم ملف المتعامل');
+  static String get alBarakaBranch => _t('alBarakaBranch', 'الفرع');
+  static String get alBarakaSwift => _t('alBarakaSwift', 'Swift');
+  static String get copyCif => _t('copyCif', 'نسخ رقم الملف');
+  static String get alBarakaCifCopied => _t('alBarakaCifCopied', 'تم نسخ رقم الملف');
+  static String get alBarakaReviewBadge => _t('alBarakaReviewBadge', 'طلب تدقيق دفع بنك البركة');
+  static String get alBarakaTransferSection => _t('alBarakaTransferSection', 'تفاصيل حوالة بنك البركة');
   static String get orderRejected => _t('orderRejected', 'تم رفض عملية البيع');
   static String get orderCancelled => _t('orderCancelled', 'مرفوض / ملغي');
-  static String get paymentApproved => _t('paymentApproved', 'تم تأكيد الدفع وإرسال إشعار للزبون');
+  static String get paymentApproved => _t('paymentApproved', 'تم التدقيق واستلام المبلغ وإرسال إشعار للزبون');
   static String get viewPaymentProof => _t('viewPaymentProof', 'عرض ملف إثبات الدفع');
   static String get awaitingPayment => _t('awaitingPayment', 'بانتظار تأكيد الدفع');
   static String get cashOnDelivery => _t('cashOnDelivery', 'دفع باليد');
@@ -336,7 +375,10 @@ abstract final class AppStrings {
   static String get pay => _t('pay', 'ادفع');
   static String get paymentSuccess => _t('paymentSuccess', 'تمت عملية الشراء!');
   static String get paymentSuccessMsg => _t('paymentSuccessMsg', 'تم تقديم طلبك بنجاح. ستصلك إشعار في التطبيق.');
-  static String get paymentSuccessShamCash => _t('paymentSuccessShamCash', 'تم استلام طلبك وصورة الدفع. سنراجع التحويل ونؤكد طلبك قريباً، وستصلك التحديثات في التطبيق.');
+  static String get paymentSuccessShamCash => _t(
+        'paymentSuccessShamCash',
+        'تم إرسال بيانات الحوالة للتدقيق. ستصلك إشعار بعد مراجعة الإدارة.',
+      );
   static String get paymentSuccessCod => _t('paymentSuccessCod', 'ادفع المبلغ نقداً عند استلام الطلب. وقت التوصيل سيصلك في التطبيق بعد مراجعة الطلب.');
   static String get trackOrder => _t('trackOrder', 'تتبع الطلب');
   static String get backToHome => _t('backToHome', 'العودة للرئيسية');
@@ -570,7 +612,7 @@ abstract final class AppStrings {
   static String get exportPdf => _t('exportPdf', 'تصدير PDF');
   static String get exportPdfFailed => _t('exportPdfFailed', 'تعذر تصدير ملف PDF');
   static String get archiveOrders => _t('archiveOrders', 'أرشفة');
-  static String get archiveOrdersConfirm => _t('archiveOrdersConfirm', 'سيتم تصدير جميع الطلبات إلى ملف PDF وحفظه في مجلد التنزيلات (rosetaje) وفتحه مباشرة. هل تريد المتابعة؟');
+  static String get archiveOrdersConfirm => _t('archiveOrdersConfirm', 'سيتم تصدير جميع الطلبات إلى ملف PDF وحفظه في مجلد التنزيلات (rozetaj) وفتحه مباشرة. هل تريد المتابعة؟');
   static String get ordersArchiveSaved => _t('ordersArchiveSaved', 'تم حفظ أرشيف الطلبات في مجلد التنزيلات:');
   static String get archiveOrdersFailed => _t('archiveOrdersFailed', 'تعذر أرشفة الطلبات');
   static String get noUsersYet => _t('noUsersYet', 'لا يوجد زبائن مسجلين');
@@ -721,7 +763,7 @@ abstract final class AppStrings {
   static String get noCompletedDriverJobs => _t('noCompletedDriverJobs', 'لا توجد مهام منجزة');
   static String get viewDeliveryJob => _t('viewDeliveryJob', 'عرض التفاصيل');
   static String get archiveDriverJobs => _t('archiveDriverJobs', 'أرشفة');
-  static String get archiveDriverJobsConfirm => _t('archiveDriverJobsConfirm', 'سيتم تصدير المهام المرفوضة والمنجزة إلى ملف PDF وحفظه في مجلد التنزيلات (rosetaje). هل تريد المتابعة؟');
+  static String get archiveDriverJobsConfirm => _t('archiveDriverJobsConfirm', 'سيتم تصدير المهام المرفوضة والمنجزة إلى ملف PDF وحفظه في مجلد التنزيلات (rozetaj). هل تريد المتابعة؟');
   static String get archiveDriverJobsSaved => _t('archiveDriverJobsSaved', 'تم حفظ الأرشيف وفتح الملف');
   static String get archiveDriverJobsFailed => _t('archiveDriverJobsFailed', 'تعذر أرشفة المهام');
   static String get noDriverJobsToArchive => _t('noDriverJobsToArchive', 'لا توجد مهام مرفوضة أو منجزة للأرشفة');
@@ -788,6 +830,11 @@ abstract final class AppStrings {
   static String get notificationPermissionBody => _t('notificationPermissionBody', 'فعّل الإشعارات لتصلك تحديثات طلباتك فوراً');
   static String get messages => _t('messages', 'الرسائل');
   static String get helpSupport => _t('helpSupport', 'المساعدة والدعم');
+  static String get customerService => _t('customerService', 'خدمة العملاء');
+  static String get customerServiceHint =>
+      _t('customerServiceHint', 'تواصلي معنا على أحد الرقمين');
+  static String get phoneCallFailed => _t('phoneCallFailed', 'تعذر فتح الاتصال. جرّبي الاتصال يدوياً.');
+  static String get loadFailed => _t('loadFailed', 'تعذر إتمام العملية. حاول مرة أخرى.');
   static String get legalPolicies => _t('legalPolicies', 'السياسات والقوانين');
   static String get saveChanges => _t('saveChanges', 'حفظ التغييرات');
   static String get changeProfilePhoto => _t('changeProfilePhoto', 'تغيير صورة الملف');
@@ -811,9 +858,9 @@ abstract final class AppStrings {
   static String get totalSpent => _t('totalSpent', 'إجمالي الإنفاق');
   static String get favoritesCount => _t('favoritesCount', 'المفضلة');
   static String get reviews => _t('reviews', 'التقييمات');
-  static String get matchyStore => _t('matchyStore', 'متجر روزي تاج');
+  static String get matchyStore => _t('matchyStore', 'متجر rozetaj');
   static String get messagesTitle => _t('messagesTitle', 'الرسائل');
-  static String get visitStore => _t('visitStore', 'زيارة متجر روزي تاج');
+  static String get visitStore => _t('visitStore', 'زيارة متجر rozetaj');
   static String get navDelivery => _t('navDelivery', 'التوصيل');
   static String get delivery => _t('delivery', 'التوصيل');
   static String get deliveryOptions => _t('deliveryOptions', 'خيارات التوصيل');
@@ -845,22 +892,22 @@ abstract final class AppStrings {
   static String get orderDelivered => _t('orderDelivered', 'تم تسليم الطلب');
   static String get subtotal => _t('subtotal', 'المجموع الفرعي');
   static String get deliveryTo => _t('deliveryTo', 'التوصيل إلى');
-  static String get deliveryHowItWorks => _t('deliveryHowItWorks', 'كيف يعمل التوصيل في روزي تاج؟');
+  static String get deliveryHowItWorks => _t('deliveryHowItWorks', 'كيف يعمل التوصيل في rozetaj؟');
   static String get deliveryRuleLocal => _t('deliveryRuleLocal', 'بقالة، مونة، ومنظفات → أقرب مندوب خلال ساعة');
   static String get deliveryRuleSameGov => _t('deliveryRuleSameGov', 'نفس محافظتك → توصيل خلال 24 ساعة كحد أقصى');
-  static String get deliveryRuleCrossGov => _t('deliveryRuleCrossGov', 'بائع بمحافظة أخرى → تنسّق مع فريق روزي تاج');
+  static String get deliveryRuleCrossGov => _t('deliveryRuleCrossGov', 'بائع بمحافظة أخرى → تنسّق مع فريق rozetaj');
   static String get localExpressTitle => _t('localExpressTitle', 'توصيل محلي سريع');
   static String get localExpressDesc => _t('localExpressDesc', 'نختار أقرب مندوب توصيل من موقعك');
   static String get sameGovTitle => _t('sameGovTitle', 'توصيل داخل المحافظة');
   static String get sameGovDesc => _t('sameGovDesc', 'من بائع في نفس محافظتك — أقصى 24 ساعة');
   static String get crossGovTitle => _t('crossGovTitle', 'توصيل بين المحافظات');
-  static String get crossGovDesc => _t('crossGovDesc', 'البائع في محافظة مختلفة — تحتاج تنسيقاً مع فريق روزي تاج');
+  static String get crossGovDesc => _t('crossGovDesc', 'البائع في محافظة مختلفة — تحتاج تنسيقاً مع فريق rozetaj');
   static String get nearestDriver => _t('nearestDriver', 'أقرب مندوب');
   static String get sellerLocation => _t('sellerLocation', 'موقع البائع');
   static String get yourGovernorate => _t('yourGovernorate', 'محافظتك');
   static String get distance => _t('distance', 'المسافة');
   static String get coordinateDelivery => _t('coordinateDelivery', 'تنسيق التوصيل');
-  static String get coordinateDeliveryTitle => _t('coordinateDeliveryTitle', 'تنسيق التوصيل مع روزي تاج');
+  static String get coordinateDeliveryTitle => _t('coordinateDeliveryTitle', 'تنسيق التوصيل مع rozetaj');
   static String get coordinateDeliveryDesc => _t('coordinateDeliveryDesc', 'طلبت المنتج من البائع. الآن تواصل مع فريق التوصيل لتحديد موقع البائع ووقت الاستلام.');
   static String get contactDeliveryTeam => _t('contactDeliveryTeam', 'تواصل مع فريق التوصيل');
   static String get confirmCoordination => _t('confirmCoordination', 'تأكيد التنسيق');
@@ -891,8 +938,8 @@ abstract final class AppStrings {
   static String get openAppPermissionSettings => _t('openAppPermissionSettings', 'تفعيل صلاحية الموقع');
   static String get enableGpsService => _t('enableGpsService', 'تفعيل GPS من إعدادات الجهاز');
   static String get locationPermissionDialogTitle => _t('locationPermissionDialogTitle', 'تفعيل الموقع');
-  static String get locationPermissionDialogBodyCustomer => _t('locationPermissionDialogBodyCustomer', 'روزي تاج يحتاج موقعك لتحديد عنوان التوصيل. اضغط «سماح» في الرسالة التالية.');
-  static String get locationPermissionDialogBodyDriver => _t('locationPermissionDialogBodyDriver', 'روزي تاج يحتاج موقعك لإرسال موقعك أثناء التوصيل. اضغط «سماح» في الرسالة التالية.');
+  static String get locationPermissionDialogBodyCustomer => _t('locationPermissionDialogBodyCustomer', 'rozetaj يحتاج موقعك لتحديد عنوان التوصيل. اضغط «سماح» في الرسالة التالية.');
+  static String get locationPermissionDialogBodyDriver => _t('locationPermissionDialogBodyDriver', 'rozetaj يحتاج موقعك لإرسال موقعك أثناء التوصيل. اضغط «سماح» في الرسالة التالية.');
   static String get locationPermissionDialogBodyCustomerSettings => _t('locationPermissionDialogBodyCustomerSettings', 'فعّل صلاحية الموقع للتطبيق من الشاشة التالية (موقع أثناء الاستخدام).');
   static String get locationPermissionDialogBodyDriverSettings => _t('locationPermissionDialogBodyDriverSettings', 'فعّل صلاحية الموقع للتطبيق من الشاشة التالية ليتابع الزبون والإدارة موقعك أثناء التوصيل.');
   static String get locationGpsDialogBody => _t('locationGpsDialogBody', 'فعّل خدمة الموقع (GPS) على جهازك ثم ارجع للتطبيق — سنكمل تلقائياً.');
@@ -927,7 +974,7 @@ abstract final class AppStrings {
 
   static String welcomeSeller(String name) => _en ? 'Hello $name we wish you good service' : 'أهلاً $name نتمنى لك خدمة جيدة';
   static String welcomeDriver(String name) => _en ? 'Hello $name, we wish you a safe delivery' : 'أهلاً $name نتمنى لك توصيلاً آمناً';
-  static String welcomeCustomer(String name) => _en ? 'Welcome $name to the rosetaje family' : 'أهلاً $name في عائلة روزي تاج';
+  static String welcomeCustomer(String name) => _en ? 'Welcome $name to the rozetaj family' : 'أهلاً $name في عائلة rozetaj';
   static String otpSubtitle(String email) => _en ? 'Enter the 6-digit code sent to\\n$email' : 'أدخل الكود المكوّن من 6 أرقام المرسل إلى\\n$email';
   static String otpResendIn(int seconds) => _en ? 'Resend after $seconds s' : 'إعادة الإرسال بعد $seconds ث';
 }

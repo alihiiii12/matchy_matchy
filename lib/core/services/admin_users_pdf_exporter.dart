@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+﻿import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -13,8 +13,8 @@ class AdminUsersPdfExporter {
     final generatedAt = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
 
     final doc = pw.Document(
-      title: 'matchy matchy Registered Users',
-      author: 'matchy matchy',
+      title: 'rozetaj Registered Users',
+      author: 'rozetaj',
     );
 
     doc.addPage(
@@ -63,7 +63,7 @@ class AdminUsersPdfExporter {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
-                      'matchy matchy',
+                      'rozetaj',
                       style: pw.TextStyle(font: englishFont, fontSize: 22, fontWeight: pw.FontWeight.bold, color: PdfColor.fromInt(0xFF2E3192)),
                     ),
                     pw.SizedBox(height: 4),

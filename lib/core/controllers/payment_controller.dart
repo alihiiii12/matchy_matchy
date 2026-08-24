@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:matchy_matchy/core/controllers/cart_controller.dart';
 import 'package:matchy_matchy/core/data/delivery_catalog.dart';
@@ -19,10 +18,12 @@ import 'package:matchy_matchy/routing/app_routes.dart';
 class PaymentController extends GetxController {
   late final double? totalArg;
   final paying = false.obs;
-  final pickingProof = false.obs;
   final paymentMethod = DeliverySession.paymentMethod.obs;
-  final paymentProof = Rxn<File>();
-  final paymentProofName = RxnString();
+
+  final senderAccountCtrl = TextEditingController();
+  final transferNameCtrl = TextEditingController();
+  final transferRefCtrl = TextEditingController();
+  final transferAmountCtrl = TextEditingController();
 
   double get amount {
     final argTotal = totalArg ?? (Get.arguments as double?);
@@ -32,17 +33,10 @@ class PaymentController extends GetxController {
 
   double get payableAmount => amount;
 
-  bool get requiresPaymentProof => paymentMethod.value == 'sham_cash' && payableAmount > 0;
+  bool get isManualTransfer =>
+      (paymentMethod.value == 'sham_cash' || paymentMethod.value == 'al_baraka') && payableAmount > 0;
 
-  bool get paymentProofIsImage {
-    final name = paymentProofName.value ?? paymentProof.value?.path ?? '';
-    final lower = name.toLowerCase();
-    return lower.endsWith('.jpg') ||
-        lower.endsWith('.jpeg') ||
-        lower.endsWith('.png') ||
-        lower.endsWith('.webp') ||
-        lower.endsWith('.heic');
-  }
+  bool get isShamCash => paymentMethod.value == 'sham_cash' && payableAmount > 0;
 
   @override
   void onInit() {
@@ -51,42 +45,25 @@ class PaymentController extends GetxController {
     if (paymentMethod.value.isEmpty) {
       paymentMethod.value = 'cash_on_delivery';
     }
+    if (payableAmount > 0) {
+      transferAmountCtrl.text = payableAmount.toStringAsFixed(0);
+    }
+  }
+
+  @override
+  void onClose() {
+    senderAccountCtrl.dispose();
+    transferNameCtrl.dispose();
+    transferRefCtrl.dispose();
+    transferAmountCtrl.dispose();
+    super.onClose();
   }
 
   void selectPaymentMethod(String method) {
     paymentMethod.value = method;
-    if (method != 'sham_cash') {
-      paymentProof.value = null;
-      paymentProofName.value = null;
+    if (isManualTransfer && transferAmountCtrl.text.trim().isEmpty && payableAmount > 0) {
+      transferAmountCtrl.text = payableAmount.toStringAsFixed(0);
     }
-  }
-
-  Future<void> pickPaymentProof() async {
-    if (pickingProof.value) return;
-
-    pickingProof.value = true;
-    try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.any,
-        allowMultiple: false,
-      );
-
-      final file = result?.files.single;
-      final path = file?.path;
-      if (path != null && path.isNotEmpty) {
-        paymentProof.value = File(path);
-        paymentProofName.value = file?.name ?? path.split(Platform.pathSeparator).last;
-      }
-    } catch (_) {
-      _showError('تعذر اختيار الملف');
-    } finally {
-      pickingProof.value = false;
-    }
-  }
-
-  void clearPaymentProof() {
-    paymentProof.value = null;
-    paymentProofName.value = null;
   }
 
   Future<void> confirmOrder() async {
@@ -118,9 +95,33 @@ class PaymentController extends GetxController {
       return;
     }
 
-    if (requiresPaymentProof && paymentProof.value == null) {
-      _showError(AppStrings.paymentProofRequired);
-      return;
+    String? senderAccount;
+    String? transferName;
+    String? transferRef;
+    double? transferAmount;
+
+    if (isManualTransfer) {
+      senderAccount = senderAccountCtrl.text.trim();
+      transferName = transferNameCtrl.text.trim();
+      transferRef = transferRefCtrl.text.trim();
+      transferAmount = double.tryParse(transferAmountCtrl.text.trim().replaceAll(',', ''));
+
+      if (senderAccount.isEmpty) {
+        _showError(AppStrings.shamSenderAccountRequired);
+        return;
+      }
+      if (transferName.isEmpty) {
+        _showError(AppStrings.shamTransferNameRequired);
+        return;
+      }
+      if (transferRef.isEmpty) {
+        _showError(AppStrings.shamTransferRefRequired);
+        return;
+      }
+      if (transferAmount == null || transferAmount <= 0) {
+        _showError(AppStrings.shamTransferAmountRequired);
+        return;
+      }
     }
 
     final removed = await cart.pruneUnavailableItems();
@@ -141,8 +142,7 @@ class PaymentController extends GetxController {
         return;
       }
 
-      final orderTotal = DeliverySession.checkoutTotal;
-      final payable = orderTotal;
+      final payable = DeliverySession.checkoutTotal;
 
       final order = await OrderRepository.instance.createOrder(
         items: cart.items.map((i) => i.toOrderItemJson()).toList(),
@@ -156,8 +156,10 @@ class PaymentController extends GetxController {
         areaName: DeliverySession.areaName,
         homeDescription: DeliverySession.homeDescription,
         paymentMethod: paymentMethod.value,
-        paymentProof: paymentProof.value,
-        paymentProofName: paymentProofName.value,
+        senderAccountName: senderAccount,
+        transferName: transferName,
+        transferRef: transferRef,
+        transferAmount: transferAmount,
         couponCode: DeliverySession.appliedCouponCode,
       );
 
@@ -199,25 +201,25 @@ class PaymentController extends GetxController {
       return true;
     }
 
-    final code = DeliverySession.appliedCouponCode;
-    if (code == null || code.isEmpty) {
-      return true;
-    }
-
     try {
-      final data = await CouponRepository.instance.validate(name: code, subtotal: cart.subtotal);
-      DeliverySession.applyCoupon(
-        code: data['name'] as String? ?? code,
-        couponId: data['coupon_id'] as int,
-        percent: data['discount_percent'] as int? ?? 0,
-        discount: (data['discount_amount'] as num).toDouble(),
+      final result = await CouponRepository.instance.validate(
+        name: DeliverySession.appliedCouponCode!,
+        subtotal: cart.subtotal,
       );
-      DeliverySession.setCheckoutPricing(subtotal: cart.subtotal, deliveryFee: 0);
+      DeliverySession.applyCoupon(
+        code: result['name'] as String? ?? DeliverySession.appliedCouponCode!,
+        couponId: result['coupon_id'] as int,
+        percent: result['discount_percent'] as int? ?? 0,
+        discount: (result['discount_amount'] as num).toDouble(),
+      );
       return true;
     } on DioException catch (e) {
       DeliverySession.clearCoupon();
-      DeliverySession.setCheckoutPricing(subtotal: cart.subtotal, deliveryFee: 0);
-      _showError(apiFriendlyError(e, fallback: AppStrings.couponApplyFailed));
+      _showError(apiFriendlyError(e, fallback: 'الكوبون غير صالح'));
+      return false;
+    } catch (_) {
+      DeliverySession.clearCoupon();
+      _showError('الكوبون غير صالح');
       return false;
     }
   }

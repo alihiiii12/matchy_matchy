@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -41,6 +41,7 @@ class OrderSummary {
     required this.discountAmount,
     required this.total,
     required this.date,
+    this.paymentMethod,
     this.estimatedTime,
     this.delivery,
     this.items = const [],
@@ -54,9 +55,13 @@ class OrderSummary {
   final double discountAmount;
   final double total;
   final String date;
+  final String? paymentMethod;
   final String? estimatedTime;
   final DeliveryOrder? delivery;
   final List<OrderLineItem> items;
+
+  bool get isShamCashAwaitingRetry =>
+      (paymentMethod == 'sham_cash' || paymentMethod == 'al_baraka') && status == 'awaiting_payment';
 
   String get itemsLabel {
     if (items.isEmpty) {
@@ -166,6 +171,7 @@ class OrderRepository {
       discountAmount: (json['discount_amount'] as num?)?.toDouble() ?? 0,
       total: (json['total'] as num?)?.toDouble() ?? 0,
       date: _formatDate(json['created_at']?.toString()),
+      paymentMethod: json['payment_method']?.toString(),
       estimatedTime: deliveryJson?['estimated_time']?.toString() ?? delivery?.estimatedTime,
       delivery: delivery,
       items: items,
@@ -194,6 +200,10 @@ class OrderRepository {
     required String paymentMethod,
     File? paymentProof,
     String? paymentProofName,
+    String? senderAccountName,
+    String? transferName,
+    String? transferRef,
+    double? transferAmount,
     String? couponCode,
     double? walletAmount,
     required double latitude,
@@ -211,6 +221,11 @@ class OrderRepository {
       'area_name': areaName,
       'home_description': homeDescription,
       'payment_method': paymentMethod,
+      if (senderAccountName != null && senderAccountName.trim().isNotEmpty)
+        'sender_account_name': senderAccountName.trim(),
+      if (transferName != null && transferName.trim().isNotEmpty) 'transfer_name': transferName.trim(),
+      if (transferRef != null && transferRef.trim().isNotEmpty) 'transfer_ref': transferRef.trim(),
+      if (transferAmount != null) 'transfer_amount': transferAmount.toString(),
     };
     if (couponCode != null && couponCode.trim().isNotEmpty) {
       fields['coupon_code'] = couponCode.trim();
@@ -219,18 +234,28 @@ class OrderRepository {
       fields['wallet_amount'] = walletAmount.toString();
     }
 
+    final hasShamFields = (paymentMethod == 'sham_cash' || paymentMethod == 'al_baraka') &&
+        senderAccountName != null &&
+        transferName != null &&
+        transferRef != null &&
+        transferAmount != null;
+
     final Response<Map<String, dynamic>> res;
-    if (paymentProof != null) {
-      final filename = paymentProofName ?? paymentProof.path.split(Platform.pathSeparator).last;
-      res = await ApiClient.instance.postMultipart(
-        '/orders',
-        fields: fields,
-        files: {
+    if (paymentProof != null || hasShamFields) {
+      Map<String, MultipartFile>? files;
+      if (paymentProof != null) {
+        final filename = paymentProofName ?? paymentProof.path.split(Platform.pathSeparator).last;
+        files = {
           'payment_proof': await MultipartFile.fromFile(
             paymentProof.path,
             filename: filename,
           ),
-        },
+        };
+      }
+      res = await ApiClient.instance.postMultipart(
+        '/orders',
+        fields: fields,
+        files: files,
       );
     } else {
       res = await ApiClient.instance.postJson(
@@ -254,6 +279,25 @@ class OrderRepository {
       );
     }
 
+    return res.data!['data'] as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> resubmitShamCashTransfer({
+    required int orderId,
+    required String senderAccountName,
+    required String transferName,
+    required String transferRef,
+    required double transferAmount,
+  }) async {
+    final res = await ApiClient.instance.postJson(
+      '/orders/$orderId/sham-cash-transfer',
+      data: {
+        'sender_account_name': senderAccountName,
+        'transfer_name': transferName,
+        'transfer_ref': transferRef,
+        'transfer_amount': transferAmount,
+      },
+    );
     return res.data!['data'] as Map<String, dynamic>;
   }
 }
@@ -312,7 +356,7 @@ class DeliveryRepository {
     DeliveryDriver? driver;
     if (driverName.isNotEmpty || driverPhone.isNotEmpty) {
       driver = DeliveryDriver(
-        name: driverName.isNotEmpty ? driverName : 'كابتن روزي تاج',
+        name: driverName.isNotEmpty ? driverName : 'كابتن rozetaj',
         phone: driverPhone,
         vehicle: (driverJson?['vehicle'] ?? json['driver_vehicle'])?.toString() ?? '',
         plateNumber: driverJson?['plate_number']?.toString() ?? '',

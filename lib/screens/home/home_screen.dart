@@ -15,6 +15,7 @@ import 'package:matchy_matchy/core/widgets/category_card.dart';
 import 'package:matchy_matchy/core/widgets/home_advertisement_slider.dart';
 import 'package:matchy_matchy/core/widgets/home_category_banner_slider.dart';
 import 'package:matchy_matchy/core/widgets/home_quick_actions_bar.dart';
+import 'package:matchy_matchy/core/widgets/home_support_button.dart';
 import 'package:matchy_matchy/core/widgets/notification_badge_icon.dart';
 import 'package:matchy_matchy/core/widgets/product_card.dart';
 import 'package:matchy_matchy/routing/app_routes.dart';
@@ -386,6 +387,7 @@ class _BrandHero extends StatelessWidget {
                   ],
                 ),
               ),
+              const HomeSupportButton(),
               const CartBadgeIcon(),
               const NotificationBadgeIcon(),
             ],

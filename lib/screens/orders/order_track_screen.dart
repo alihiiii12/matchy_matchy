@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:matchy_matchy/core/controllers/order_track_controller.dart';
 import 'package:matchy_matchy/core/l10n/app_strings.dart';
+import 'package:matchy_matchy/core/repositories/order_repository.dart';
 import 'package:matchy_matchy/core/theme/app_colors.dart';
 import 'package:matchy_matchy/core/widgets/order_invoice_summary.dart';
 
@@ -60,6 +61,13 @@ class OrderTrackScreen extends GetView<OrderTrackController> {
             ),
             const SizedBox(height: 16),
             OrderInvoiceSummary(order: order),
+            if (order.isShamCashAwaitingRetry) ...[
+              const SizedBox(height: 16),
+              _RetryShamCashCard(
+                orderId: order.id,
+                onDone: () => controller.refreshOrder(order.id),
+              ),
+            ],
             const SizedBox(height: 16),
             Card(
               child: Padding(
@@ -192,6 +200,106 @@ class _TrackStep extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RetryShamCashCard extends StatefulWidget {
+  const _RetryShamCashCard({required this.orderId, required this.onDone});
+
+  final int orderId;
+  final VoidCallback onDone;
+
+  @override
+  State<_RetryShamCashCard> createState() => _RetryShamCashCardState();
+}
+
+class _RetryShamCashCardState extends State<_RetryShamCashCard> {
+  final _account = TextEditingController();
+  final _name = TextEditingController();
+  final _ref = TextEditingController();
+  final _amount = TextEditingController();
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _account.dispose();
+    _name.dispose();
+    _ref.dispose();
+    _amount.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final amount = double.tryParse(_amount.text.trim().replaceAll(',', ''));
+    if (_account.text.trim().isEmpty ||
+        _name.text.trim().isEmpty ||
+        _ref.text.trim().isEmpty ||
+        amount == null ||
+        amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppStrings.shamTransferAmountRequired)),
+      );
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await OrderRepository.instance.resubmitShamCashTransfer(
+        orderId: widget.orderId,
+        senderAccountName: _account.text.trim(),
+        transferName: _name.text.trim(),
+        transferRef: _ref.text.trim(),
+        transferAmount: amount,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppStrings.paymentSuccessShamCash)),
+      );
+      widget.onDone();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppStrings.loadFailed)),
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(AppStrings.rejectPayment, style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.error)),
+            const SizedBox(height: 6),
+            Text(
+              'لم يتم استلام الحوالة. حاول التسديد مرة أخرى.',
+              style: TextStyle(color: AppColors.textSecondary, height: 1.4),
+            ),
+            const SizedBox(height: 12),
+            TextField(controller: _account, decoration: InputDecoration(labelText: AppStrings.shamSenderAccount, border: OutlineInputBorder())),
+            const SizedBox(height: 8),
+            TextField(controller: _name, decoration: InputDecoration(labelText: AppStrings.shamTransferName, border: OutlineInputBorder())),
+            const SizedBox(height: 8),
+            TextField(controller: _ref, decoration: InputDecoration(labelText: AppStrings.shamTransferRef, border: OutlineInputBorder())),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _amount,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(labelText: AppStrings.shamTransferAmount, border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 12),
+            FilledButton(
+              onPressed: _busy ? null : _submit,
+              child: Text(_busy ? AppStrings.verifyingPayment : AppStrings.verifyShamCash),
+            ),
+          ],
+        ),
       ),
     );
   }

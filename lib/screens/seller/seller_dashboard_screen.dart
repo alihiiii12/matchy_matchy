@@ -93,7 +93,7 @@ class SellerDashboardScreen extends GetView<SellerDashboardController> {
   }
 
   void _openProductsTab() {
-    // Seller role retired — single-vendor Matchy Matchy store.
+    // Seller role retired — single-vendor rozetaj store.
   }
 }
 

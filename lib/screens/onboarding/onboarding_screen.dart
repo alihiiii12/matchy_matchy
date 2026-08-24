@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:matchy_matchy/core/controllers/onboarding_controller.dart';
@@ -12,7 +12,7 @@ class OnboardingScreen extends GetView<OnboardingController> {
   static const _pages = [
     (
       'كل ما تحتاجه في تطبيق واحد',
-      'تسوق الأزياء والإلكترونيات والبقالة والمشروبات وأكثر مع روزي تاج.',
+      'تسوق الأزياء والإلكترونيات والبقالة والمشروبات وأكثر مع rozetaj.',
       'assets/images/onboarding/onboarding_1.png',
     ),
     (
@@ -74,6 +74,28 @@ class OnboardingScreen extends GetView<OnboardingController> {
               style: TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: controller.continueAsGuest,
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(52),
+                    side: BorderSide(color: AppColors.accent.withValues(alpha: 0.35)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  child: Text(
+                    AppStrings.continueAsGuest,
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
             ),

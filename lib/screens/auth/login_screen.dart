@@ -125,6 +125,32 @@ class LoginScreen extends GetView<LoginController> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: controller.continueAsGuest,
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(52),
+                    side: BorderSide(color: AppColors.accent.withValues(alpha: 0.35)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  child: Obx(() {
+                    final lang = Get.isRegistered<LanguageController>()
+                        ? LanguageController.instance
+                        : Get.put(LanguageController(), permanent: true);
+                    lang.code.value;
+                    return Text(
+                      AppStrings.continueAsGuest,
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                    );
+                  }),
+                ),
+              ),
             ],
           ),
         ),

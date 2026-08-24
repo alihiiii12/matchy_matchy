@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:printing/printing.dart';
 
 abstract final class PdfFileSaver {
-  static const _archiveFolder = 'matchy matchy';
+  static const _archiveFolder = 'rozetaj';
 
   static Future<String> saveArchivePdf(Uint8List bytes, String baseName) async {
     final timestamp = DateFormat('yyyyMMdd-HHmmss').format(DateTime.now());

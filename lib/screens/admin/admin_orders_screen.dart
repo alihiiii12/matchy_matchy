@@ -113,6 +113,7 @@ class AdminOrdersScreen extends GetView<AdminOrdersController> {
                 order: order,
                 onSetDeliveryTime: () => controller.showDeliveryTimeDialog(order),
                 onApprovePayment: () => controller.approvePayment(order),
+                onRejectPayment: () => controller.confirmRejectPayment(order),
                 onRejectOrder: () => controller.confirmRejectOrder(order),
                 onConfirmDelivered: () => controller.confirmDriverDelivery(order),
                 onTrackDriver: () => controller.openDriverTracking(order),
@@ -149,6 +150,7 @@ class _OrderCard extends StatelessWidget {
     required this.order,
     required this.onSetDeliveryTime,
     required this.onApprovePayment,
+    required this.onRejectPayment,
     required this.onRejectOrder,
     required this.onConfirmDelivered,
     required this.onTrackDriver,
@@ -162,6 +164,7 @@ class _OrderCard extends StatelessWidget {
   final Map<String, dynamic> order;
   final VoidCallback onSetDeliveryTime;
   final VoidCallback onApprovePayment;
+  final VoidCallback onRejectPayment;
   final VoidCallback onRejectOrder;
   final VoidCallback onConfirmDelivered;
   final VoidCallback onTrackDriver;
@@ -179,6 +182,8 @@ class _OrderCard extends StatelessWidget {
     final status = order['status'] as String? ?? '';
     final paymentMethod = order['payment_method'] as String? ?? '';
     final proofUrl = order['payment_proof_url'] as String?;
+    final hasTransfer = (order['sender_account_name'] as String?)?.trim().isNotEmpty == true &&
+        (order['transfer_ref'] as String?)?.trim().isNotEmpty == true;
     final pendingReview = status == 'pending_review';
     final paymentConfirmed = status == 'payment_confirmed';
     final approved = status == 'approved';
@@ -186,6 +191,10 @@ class _OrderCard extends StatelessWidget {
     final awaitingReceipt = status == 'awaiting_receipt';
     final isCancelled = status == 'cancelled';
     final canReject = !isCancelled && status != 'delivered';
+    final isManualTransfer = paymentMethod == 'sham_cash' || paymentMethod == 'al_baraka';
+    final canReviewShamCash = isManualTransfer &&
+        (pendingReview || awaitingPayment) &&
+        (hasTransfer || (proofUrl != null && proofUrl.isNotEmpty));
     final deliveryStatus = delivery?['status'] as String?;
     final driverReportedDelivery = delivery?['driver_delivery_reported'] == true ||
         deliveryStatus == 'driver_delivered';
@@ -199,7 +208,9 @@ class _OrderCard extends StatelessWidget {
     final deliveryTimeSent = AdminOrdersController.isDeliveryTimeSent(order);
     final canSendDeliveryTime = !isCancelled &&
         !deliveryTimeSent &&
-        (pendingReview || paymentConfirmed || awaitingPayment || status == 'processing');
+        (isManualTransfer
+            ? paymentConfirmed
+            : (pendingReview || paymentConfirmed || awaitingPayment || status == 'processing'));
     final hasCustomerLocation = order['has_customer_location'] as bool? ??
         (delivery?['has_customer_location'] as bool?) ??
         (order['latitude'] != null && order['longitude'] != null);
@@ -416,6 +427,41 @@ class _OrderCard extends StatelessWidget {
                 '${AppStrings.expectedDelivery}: ${(delivery['estimated_time'] as String?)?.isNotEmpty == true ? delivery['estimated_time'] : AppStrings.deliveryTimePending}',
               ),
             ],
+            if (isManualTransfer && hasTransfer) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.inputFill,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      paymentMethod == 'al_baraka'
+                          ? AppStrings.alBarakaReviewBadge
+                          : AppStrings.shamCashReviewBadge,
+                      style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.primary),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      paymentMethod == 'al_baraka'
+                          ? AppStrings.alBarakaTransferSection
+                          : AppStrings.shamCashTransferSection,
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 6),
+                    Text('${AppStrings.shamSenderAccount}: ${order['sender_account_name'] ?? '—'}'),
+                    Text('${AppStrings.shamTransferName}: ${order['transfer_name'] ?? '—'}'),
+                    Text('${AppStrings.shamTransferRef}: ${order['transfer_ref'] ?? '—'}'),
+                    Text('${AppStrings.shamTransferAmount}: ${order['transfer_amount'] ?? '—'}'),
+                  ],
+                ),
+              ),
+            ],
             if (proofUrl != null && proofUrl.isNotEmpty) ...[
               const SizedBox(height: 12),
               OutlinedButton.icon(
@@ -424,12 +470,26 @@ class _OrderCard extends StatelessWidget {
                 label: Text(AppStrings.viewPaymentProof),
               ),
             ],
-            if (paymentMethod == 'sham_cash' && pendingReview && proofUrl != null && proofUrl.isNotEmpty) ...[
+            if (canReviewShamCash) ...[
               const SizedBox(height: 8),
               GradientButton(
                 label: AppStrings.approvePayment,
                 height: 48,
                 onPressed: onApprovePayment,
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: onRejectPayment,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.error,
+                    side: BorderSide(color: AppColors.error),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  ),
+                  child: Text(AppStrings.rejectPayment, style: TextStyle(fontWeight: FontWeight.w600)),
+                ),
               ),
             ],
             if (canReject) ...[

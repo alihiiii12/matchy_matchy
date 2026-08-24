@@ -150,6 +150,8 @@ class LoginController extends GetxController {
   }
 
   void goToCreateAccount() => Get.toNamed(AppRoutes.createAccount);
+
+  void continueAsGuest() => Get.offAllNamed(AppRoutes.main);
 }
 
 class LoginBinding extends Bindings {

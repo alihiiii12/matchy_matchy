@@ -1,7 +1,7 @@
-import 'package:get/get.dart';
+﻿import 'package:get/get.dart';
 import 'package:matchy_matchy/core/controllers/language_controller.dart';
 
-/// أدوار أفراد العائلة لطقم روزي تاج المتماثل.
+/// أدوار أفراد العائلة لطقم rozetaj المتماثل.
 abstract final class FamilyMemberRoles {
   static const father = 'father';
   static const motherHijab = 'mother_hijab';

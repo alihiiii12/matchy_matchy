@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+﻿import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -23,7 +23,7 @@ class DriverJobsPdfExporter {
     final englishFont = pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf'));
     final generatedAt = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
 
-    final doc = pw.Document(title: 'matchy matchy Driver Jobs Archive', author: 'matchy matchy');
+    final doc = pw.Document(title: 'rozetaj Driver Jobs Archive', author: 'rozetaj');
 
     doc.addPage(
       pw.MultiPage(
@@ -33,7 +33,7 @@ class DriverJobsPdfExporter {
         header: (context) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            _mixedText('أرشيف مهام التوصيل — matchy matchy', arabicFont, englishFont, fontSize: 18, bold: true),
+            _mixedText('أرشيف مهام التوصيل — rozetaj', arabicFont, englishFont, fontSize: 18, bold: true),
             pw.SizedBox(height: 6),
             _mixedText('تاريخ التصدير: $generatedAt', arabicFont, englishFont, fontSize: 10),
             _mixedText('عدد المهام: ${jobs.length}', arabicFont, englishFont, fontSize: 10),

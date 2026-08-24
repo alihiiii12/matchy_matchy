@@ -170,6 +170,35 @@ class AdminOrdersController extends GetxController {
     }
   }
 
+  Future<void> confirmRejectPayment(Map<String, dynamic> order) async {
+    final confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        title: Text(AppStrings.rejectPayment),
+        content: Text(AppStrings.rejectPaymentConfirm),
+        actions: [
+          TextButton(onPressed: () => Get.back(result: false), child: Text(AppStrings.cancel)),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: Text(AppStrings.rejectPayment, style: TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    await rejectPayment(order);
+  }
+
+  Future<void> rejectPayment(Map<String, dynamic> order) async {
+    try {
+      await ApiClient.instance.postJson('/admin/orders/${order['id']}/reject-payment');
+      _showMessage(AppStrings.paymentRejectedNotif, success: true);
+      await load(silent: true);
+    } on DioException catch (e) {
+      _showMessage(apiFriendlyError(e), success: false);
+    }
+  }
+
   Future<void> confirmRejectOrder(Map<String, dynamic> order) async {
     final confirmed = await Get.dialog<bool>(
       AlertDialog(

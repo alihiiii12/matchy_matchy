@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:matchy_matchy/core/controllers/payment_controller.dart';
@@ -8,6 +6,7 @@ import 'package:matchy_matchy/core/l10n/app_strings.dart';
 import 'package:matchy_matchy/core/services/delivery_service.dart';
 import 'package:matchy_matchy/core/theme/app_colors.dart';
 import 'package:matchy_matchy/core/utils/currency_formatter.dart';
+import 'package:matchy_matchy/core/widgets/al_baraka_cards.dart';
 import 'package:matchy_matchy/core/widgets/gradient_button.dart';
 import 'package:matchy_matchy/core/widgets/sham_cash_barcode.dart';
 
@@ -23,11 +22,9 @@ class PaymentScreen extends GetView<PaymentController> {
       final payable = controller.payableAmount;
       final paymentMethod = controller.paymentMethod.value;
       final paying = controller.paying.value;
-      final pickingProof = controller.pickingProof.value;
-      final proof = controller.paymentProof.value;
-      final proofName = controller.paymentProofName.value;
-      final proofIsImage = controller.paymentProofIsImage;
-      final showShamCashProof = paymentMethod == 'sham_cash' && payable > 0;
+      final showShamCash = paymentMethod == 'sham_cash' && payable > 0;
+      final showAlBaraka = paymentMethod == 'al_baraka' && payable > 0;
+      final showManualTransfer = showShamCash || showAlBaraka;
 
       return Stack(
         children: [
@@ -62,24 +59,30 @@ class PaymentScreen extends GetView<PaymentController> {
                           onTap: paying ? null : () => controller.selectPaymentMethod('sham_cash'),
                         ),
                         _PaymentOption(
+                          title: AppStrings.alBaraka,
+                          subtitle: AppStrings.alBarakaDesc,
+                          icon: Icons.account_balance_outlined,
+                          selected: paymentMethod == 'al_baraka',
+                          onTap: paying ? null : () => controller.selectPaymentMethod('al_baraka'),
+                        ),
+                        _PaymentOption(
                           title: AppStrings.cashOnDelivery,
                           subtitle: AppStrings.cashOnDeliveryDesc,
                           icon: Icons.payments_outlined,
                           selected: paymentMethod == 'cash_on_delivery',
                           onTap: paying ? null : () => controller.selectPaymentMethod('cash_on_delivery'),
                         ),
-                        if (showShamCashProof) ...[
+                        if (showShamCash) ...[
                           const SizedBox(height: 16),
                           const ShamCashBarcodeCard(),
                           const SizedBox(height: 16),
-                          _PaymentProofSection(
-                            proof: proof,
-                            fileName: proofName,
-                            isImage: proofIsImage,
-                            picking: pickingProof,
-                            onPick: paying || pickingProof ? null : controller.pickPaymentProof,
-                            onClear: proof == null || paying ? null : controller.clearPaymentProof,
-                          ),
+                          _ShamCashTransferForm(controller: controller, enabled: !paying),
+                        ],
+                        if (showAlBaraka) ...[
+                          const SizedBox(height: 16),
+                          const AlBarakaCards(),
+                          const SizedBox(height: 16),
+                          _ShamCashTransferForm(controller: controller, enabled: !paying),
                         ],
                       ],
                     ),
@@ -89,8 +92,10 @@ class PaymentScreen extends GetView<PaymentController> {
                   padding: const EdgeInsets.all(24),
                   child: GradientButton(
                     label: paying
-                        ? 'جاري تأكيد الطلب...'
-                        : '${AppStrings.confirmOrder} ${CurrencyFormatter.format(payable)}',
+                        ? AppStrings.verifyingPayment
+                        : showManualTransfer
+                            ? '${AppStrings.verifyShamCash} · ${CurrencyFormatter.format(payable)}'
+                            : '${AppStrings.confirmOrder} ${CurrencyFormatter.format(payable)}',
                     onPressed: paying ? null : () => controller.confirmOrder(),
                   ),
                 ),
@@ -100,16 +105,16 @@ class PaymentScreen extends GetView<PaymentController> {
           if (paying)
             Container(
               color: Colors.black26,
-              child: const Center(
+              child: Center(
                 child: Card(
                   child: Padding(
-                    padding: EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(24),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 16),
-                        Text('جاري إرسال طلبك...'),
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Text(AppStrings.sendingOrder),
                       ],
                     ),
                   ),
@@ -122,22 +127,11 @@ class PaymentScreen extends GetView<PaymentController> {
   }
 }
 
-class _PaymentProofSection extends StatelessWidget {
-  const _PaymentProofSection({
-    required this.proof,
-    required this.fileName,
-    required this.isImage,
-    required this.picking,
-    required this.onPick,
-    required this.onClear,
-  });
+class _ShamCashTransferForm extends StatelessWidget {
+  const _ShamCashTransferForm({required this.controller, required this.enabled});
 
-  final File? proof;
-  final String? fileName;
-  final bool isImage;
-  final bool picking;
-  final VoidCallback? onPick;
-  final VoidCallback? onClear;
+  final PaymentController controller;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -152,56 +146,57 @@ class _PaymentProofSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppStrings.paymentProofTitle, style: TextStyle(fontWeight: FontWeight.w700)),
+          Text(AppStrings.shamCashTransferDetails, style: TextStyle(fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
-          Text(AppStrings.paymentProofHint, style: TextStyle(color: AppColors.textSecondary, fontSize: 12, height: 1.4)),
+          Text(
+            AppStrings.shamCashTransferHint,
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12, height: 1.4),
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            controller: controller.senderAccountCtrl,
+            enabled: enabled,
+            decoration: InputDecoration(
+              labelText: AppStrings.shamSenderAccount,
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: AppColors.surface,
+            ),
+          ),
           const SizedBox(height: 12),
-          if (proof != null) ...[
-            if (isImage)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.file(proof!, height: 180, width: double.infinity, fit: BoxFit.cover),
-              )
-            else
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.insert_drive_file_outlined, color: AppColors.primary, size: 28),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        fileName ?? proof!.path.split(Platform.pathSeparator).last,
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(onPressed: onClear, child: Text(AppStrings.changePaymentFile)),
+          TextField(
+            controller: controller.transferNameCtrl,
+            enabled: enabled,
+            decoration: InputDecoration(
+              labelText: AppStrings.shamTransferName,
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: AppColors.surface,
             ),
-          ] else
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: onPick,
-                icon: picking
-                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Icon(Icons.upload_file_outlined),
-                label: Text(picking ? 'جاري الاختيار...' : AppStrings.pickPaymentFile),
-              ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: controller.transferRefCtrl,
+            enabled: enabled,
+            decoration: InputDecoration(
+              labelText: AppStrings.shamTransferRef,
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: AppColors.surface,
             ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: controller.transferAmountCtrl,
+            enabled: enabled,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              labelText: AppStrings.shamTransferAmount,
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: AppColors.surface,
+            ),
+          ),
         ],
       ),
     );
@@ -289,7 +284,7 @@ class _AddressSummary extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.location_on_outlined, color: AppColors.accent, size: 20),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(AppStrings.deliveryAddress, style: TextStyle(fontWeight: FontWeight.w700)),
             ],
           ),

@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -44,7 +44,7 @@ class NotificationService extends GetxService with WidgetsBindingObserver {
 
   static const _androidChannel = AndroidNotificationChannel(
     'matchy_matchy_orders',
-    'إشعارات روزي تاج',
+    'إشعارات rozetaj',
     description: 'تحديثات الطلبات والمنتجات والتوصيل',
     importance: Importance.high,
   );
@@ -96,7 +96,7 @@ class NotificationService extends GetxService with WidgetsBindingObserver {
   Future<void> _initFirebaseMessaging() async {
     if (kIsWeb) return;
 
-    // بدون google-services.json لروزي تاج — إشعارات التطبيق عبر الـ API فقط
+    // بدون google-services.json لrozetaj — إشعارات التطبيق عبر الـ API فقط
     try {
       if (Firebase.apps.isEmpty) {
         fcmReady.value = false;

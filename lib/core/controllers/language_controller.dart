@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LanguageController extends GetxController {
   static LanguageController get instance => Get.find<LanguageController>();
 
-  static const _prefsKey = 'rosetaje_locale';
+  static const _prefsKey = 'rozetaj_locale';
   static const options = ['ar', 'en'];
 
   final code = 'ar'.obs;

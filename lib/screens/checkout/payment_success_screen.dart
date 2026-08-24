@@ -13,7 +13,7 @@ class PaymentSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paymentMethod = ModalRoute.of(context)?.settings.arguments as String? ?? 'cash_on_delivery';
-    final message = paymentMethod == 'sham_cash'
+    final message = (paymentMethod == 'sham_cash' || paymentMethod == 'al_baraka')
         ? AppStrings.paymentSuccessShamCash
         : AppStrings.paymentSuccessCod;
 

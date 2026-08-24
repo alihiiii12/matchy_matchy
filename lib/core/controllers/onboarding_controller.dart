@@ -14,6 +14,8 @@ class OnboardingController extends GetxController {
   void goToCreateAccount() => Get.toNamed(AppRoutes.createAccount);
 
   void goToLogin() => Get.toNamed(AppRoutes.login);
+
+  void continueAsGuest() => Get.offAllNamed(AppRoutes.main);
 }
 
 class OnboardingBinding extends Bindings {
